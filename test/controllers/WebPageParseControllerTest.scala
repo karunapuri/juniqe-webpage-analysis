@@ -8,7 +8,7 @@ import org.scalatest.mockito.MockitoSugar
 class WebPageParseControllerTest extends FunSpec with Matchers with MockitoSugar {
 
   describe("Web Page Parse Controller") {
-    val webPageParseController = mock[WebPageParseController]
+    val mockWebPageParseController = mock[WebPageParseController]
     val url = "http://jsoup.org"
 
     describe("routes") {
@@ -30,9 +30,9 @@ class WebPageParseControllerTest extends FunSpec with Matchers with MockitoSugar
 
         val docType = if (docTypeString == "<!DOCTYPE html>") "Document HTML Version: 5" else "Document HTML Version: Unknown"
 
-        when(webPageParseController.getCompleteWebPgInfo(url)) thenReturn (docType)
+        when(mockWebPageParseController.getCompleteWebPgInfo(url)) thenReturn (docType)
 
-        webPageParseController.getCompleteWebPgInfo(url) should be (docType)
+        mockWebPageParseController.getCompleteWebPgInfo(url) should be (docType)
         docType should be("Document HTML Version: 5")
       }
     }
@@ -41,7 +41,7 @@ class WebPageParseControllerTest extends FunSpec with Matchers with MockitoSugar
       it("should render document title correctly") {
         val document = Jsoup.connect(url).get()
         val title = document.title
-        when(webPageParseController.getCompleteWebPgInfo(url)) thenReturn (title)
+        when(mockWebPageParseController.getCompleteWebPgInfo(url)) thenReturn (title)
         title should be("jsoup Java HTML Parser, with best of DOM, CSS, and jquery")
       }
     }
@@ -53,11 +53,11 @@ class WebPageParseControllerTest extends FunSpec with Matchers with MockitoSugar
         val h1HeadingVal = h1Headings.toString
         val h3HeadingVal = h3Headings.toString
 
-        when(webPageParseController.getCompleteWebPgInfo(url)) thenReturn (h1HeadingVal)
+        when(mockWebPageParseController.getCompleteWebPgInfo(url)) thenReturn (h1HeadingVal)
         h1HeadingVal should be ("<h1>jsoup: Java HTML Parser</h1>")
         h1Headings.size() should be (1)
 
-        when(webPageParseController.getCompleteWebPgInfo(url)) thenReturn (h3HeadingVal)
+        when(mockWebPageParseController.getCompleteWebPgInfo(url)) thenReturn (h3HeadingVal)
         h3Headings.size() should be (5)
       }
     }
@@ -69,7 +69,7 @@ class WebPageParseControllerTest extends FunSpec with Matchers with MockitoSugar
         val internalLink = links.attr("abs:href")
         val externalLink = links.attr("href")
 
-        when(webPageParseController.getCompleteWebPgInfo(url)) thenReturn (internalLink + externalLink)
+        when(mockWebPageParseController.getCompleteWebPgInfo(url)) thenReturn (internalLink + externalLink)
         internalLink.leftSideValue should be ("https://jsoup.org/")
         externalLink.leftSideValue should be ("/")
         links.size() should be (45)
@@ -84,13 +84,24 @@ class WebPageParseControllerTest extends FunSpec with Matchers with MockitoSugar
         val inaccessibleLinkVal = Jsoup.connect(links.attr("abs:href")).toString
         val okStatus = (accessibleLink.execute().statusCode() == 200)
         val inaccessibleLink = if(okStatus) ""
-        when(webPageParseController.getCompleteWebPgInfo(url)) thenReturn (inaccessibleLinkVal)
+        when(mockWebPageParseController.getCompleteWebPgInfo(url)) thenReturn (inaccessibleLinkVal)
         okStatus should be (true)
         inaccessibleLink should be ("")
       }
     }
 
     describe("Document/page login-form"){
+      it("should analyse login-form info. on a page"){
+        val document = Jsoup.connect(url).get
+        val loginForm = document.select("input[type$=password]")
+        val loginFormNotExist = "login form doesn't exists for given page"
+          if(loginForm.isEmpty)
+            println(loginFormNotExist)
+
+        when(mockWebPageParseController.getCompleteWebPgInfo(url)) thenReturn(loginFormNotExist)
+        mockWebPageParseController.getCompleteWebPgInfo(url) should be ("login form doesn't exists for given page")
+
+      }
 
     }
   }
