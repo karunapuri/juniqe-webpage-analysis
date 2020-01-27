@@ -3,10 +3,13 @@ package controllers
 import java.io.IOException
 import java.net.{MalformedURLException, UnknownHostException}
 import javax.inject.Inject
+
 import com.google.inject.Singleton
 import models.WebPageAnalysisForm
+import models.helpers.{WebPageHtmlHeadingsHelper, WebPageHtmlLinksHelper}
 import org.jsoup.Jsoup
 import play.api.mvc._
+
 import scala.collection.JavaConverters._
 
 @Singleton
@@ -39,9 +42,12 @@ class WebPageParseController @Inject()(cc:ControllerComponents) extends Abstract
   }
 
   def getCompleteWebPgInfo(url: String) = {
-    (getDocTitle(url) + "\n" + getHtmlVersion(url) + "\n" + getHtmlh1Heading(url) + "\n" + getHtmlh2Heading(url) +
-      "\n"+ getHtmlh3Heading(url) + "\n"+ getHtmlh4Heading(url) + "\n"+getHtmlh5Heading(url) + "\n"+ getHtmlh6Heading(url)
-      +"\n"+getAllHtmlExternalLinks(url) + "\n"+ getAllHtmlInternalLinks(url)+ "\n"+ getAllHtmlInaccessibleLinks(url)+"\n" + getHtmlLoginFormInfo(url))
+    (getDocTitle(url) + "\n" + getHtmlVersion(url) + "\n" + WebPageHtmlHeadingsHelper.getHtmlh1Heading(url) + "\n" +
+      WebPageHtmlHeadingsHelper.getHtmlh2Heading(url) + "\n"+ WebPageHtmlHeadingsHelper.getHtmlh3Heading(url) + "\n"+
+      WebPageHtmlHeadingsHelper.getHtmlh4Heading(url) + "\n"+WebPageHtmlHeadingsHelper.getHtmlh5Heading(url) + "\n"+
+      WebPageHtmlHeadingsHelper.getHtmlh6Heading(url) +"\n"+WebPageHtmlLinksHelper.getAllHtmlExternalLinks(url) + "\n"+
+      WebPageHtmlLinksHelper.getAllHtmlInternalLinks(url)+ "\n"+ WebPageHtmlLinksHelper.getAllHtmlInaccessibleLinks(url)
+      +"\n" + getHtmlLoginFormInfo(url))
     }
 
   private def getDocTitle(url: String) = {
@@ -94,170 +100,6 @@ class WebPageParseController @Inject()(cc:ControllerComponents) extends Abstract
       case e: IllegalArgumentException => ""
       case e: IOException => ""
     }
-  }
-
-  private def getHtmlh2Heading(url: String) = {
-    try {
-      val document = Jsoup.connect(url).get
-      val h2Headings = document.getElementsByTag("h2")
-      val h2HeadingVal =
-        for (h2Heading <- h2Headings.asScala)
-          yield (h2Heading)
-      val h2HeadingCount = "h2 Headings Count:" + h2Headings.size()
-      (h2HeadingVal, h2HeadingCount)
-    }
-    catch  {
-      case e: UnknownHostException => ""
-      case e: MalformedURLException => ""
-      case e: IllegalArgumentException => ""
-      case e: IOException => ""
-    }
-  }
-  private def getHtmlh1Heading(url: String) = {
-    try {
-      val document = Jsoup.connect(url).get
-      val h1Headings = document.getElementsByTag("h1")
-      val h1HeadingVal =
-        for (h1Heading <- h1Headings.asScala)
-          yield (h1Heading)
-      val h1HeadingCount = "h1 Headings Count:" + h1Headings.size()
-      (h1HeadingVal, h1HeadingCount)
-    }
-    catch  {
-      case e: UnknownHostException => ""
-      case e: MalformedURLException => ""
-      case e: IllegalArgumentException => ""
-      case e: IOException => ""
-    }
-  }
-  private def getHtmlh3Heading(url: String) = {
-    try {
-      val document = Jsoup.connect(url).get
-      val h3Headings = document.getElementsByTag("h3")
-      val h3HeadingVal =
-        for (h3Heading <- h3Headings.asScala)
-          yield (h3Heading)
-      val h3HeadingCount = "h3 Headings Count:" + h3Headings.size()
-      (h3HeadingVal, h3HeadingCount)
-    }
-    catch  {
-      case e: UnknownHostException => ""
-      case e: MalformedURLException => ""
-      case e: IllegalArgumentException => ""
-      case e: IOException => ""
-    }
-  }
-  private def getHtmlh4Heading(url: String) = {
-    try {
-      val document = Jsoup.connect(url).get
-      val h4Headings = document.getElementsByTag("h4")
-      val h4HeadingVal =
-        for (h4Heading <- h4Headings.asScala)
-          yield (h4Heading)
-      val h4HeadingCount = "h4 Headings Count:" + h4Headings.size()
-      (h4HeadingVal, h4HeadingCount)
-    }
-    catch  {
-      case e: UnknownHostException => ""
-      case e: MalformedURLException => ""
-      case e: IllegalArgumentException => ""
-    }
-  }
-  private def getHtmlh5Heading(url: String) = {
-    try {
-      val document = Jsoup.connect(url).get
-      val h5Headings = document.getElementsByTag("h5")
-      val h5HeadingVal =
-        for (h5Heading <- h5Headings.asScala)
-          yield (h5Heading + "\n")
-      val h5HeadingCount = "h5 Headings Count:" + h5Headings.size()
-      (h5HeadingVal, h5HeadingCount)
-    }
-    catch  {
-      case e: UnknownHostException => ""
-      case e: MalformedURLException => ""
-      case e: IllegalArgumentException => ""
-      case e: IOException => ""
-    }
-  }
-  private def getHtmlh6Heading(url: String) = {
-    try {
-      val document = Jsoup.connect(url).get
-      val h6Headings = document.getElementsByTag("h6")
-      val h6HeadingVal =
-        for (h6Heading <- h6Headings.asScala)
-          yield (h6Heading)
-      val h6HeadingCount = "h6 Headings Count:" + h6Headings.size()
-      (h6HeadingVal, h6HeadingCount) + "\n"
-    }
-    catch  {
-      case e: UnknownHostException => ""
-      case e: MalformedURLException => ""
-      case e: IllegalArgumentException => ""
-      case e: IOException => ""
-    }
-  }
-
-  private def getAllHtmlExternalLinks(url: String) = {
-
-    try {
-      val document = Jsoup.connect(url).get
-      val links = document.select("a[href]")
-      for {link <- links.asScala; if (link.attr("abs:href") == link.attr("href"))}
-        yield {
-          "External link: " + link.attr("href") + "\n" + "External Link text: " + link.text + "\n"
-        }
-    }
-    catch  {
-      case e: UnknownHostException => ""
-      case e: MalformedURLException => ""
-      case e: IllegalArgumentException => ""
-      case e: IOException => ""
-    }
-  }
-
-  private def getAllHtmlInternalLinks(url: String) = {
-    try {
-      val document = Jsoup.connect(url).get
-      val links = document.select("a[href]")
-      val internalLinksVal =
-        for {link <- links.asScala; if (link.attr("abs:href") != link.attr("href"))}
-          yield {
-            "Internal link: " + link.attr("abs:href") + "\n" + "Internal Link text: " + link.text + "\n"
-          }
-      val totalLinksCount = "Total Links: " + links.size()
-      (internalLinksVal, totalLinksCount) + "\n"
-    }
-    catch  {
-      case e: UnknownHostException => ""
-      case e: MalformedURLException => ""
-      case e: IllegalArgumentException => ""
-      case e: IOException => ""
-    }
-  }
-
-  private def getAllHtmlInaccessibleLinks(url: String): String = {
-    try {
-      val document = Jsoup.connect(url).get
-      val links = document.select("a[href]")
-      var inaccessibleLinkCount = 0
-      for (link <- links.asScala) {
-        val inaccessibleLink = Jsoup.connect(link.attr("abs:href"))
-        val notOkStatus = (inaccessibleLink.execute().statusCode() != 200)
-        if (notOkStatus) {
-          inaccessibleLinkCount += 1;
-          return "Inaccessible/ Broken Link:" + inaccessibleLink + "\n" + "Inaccessible Links Count:" + inaccessibleLinkCount + "\n"
-        }
-        else return "Inaccessible Links Count:" + inaccessibleLinkCount + "\n"
-      }
-    }
-    catch  {
-      case e: UnknownHostException => ""
-      case e: MalformedURLException => ""
-      case e: IllegalArgumentException => ""
-      case e: IOException => ""
-    }
-    ""
   }
 
   private def getHtmlLoginFormInfo(url: String) = {
