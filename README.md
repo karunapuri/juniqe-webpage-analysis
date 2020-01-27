@@ -23,5 +23,14 @@ Backend:
 Frontend:
 1. Scala Twirl Template (HTML)
 
+# Execution Steps:
+1. git clone https://github.com/karunapuri/juniqe-webpage-analysis
+2. cd juniqe-webpage-analysis: sbt (Press Enter)
+3. run 9000 (locally start project from terminal)
+4. Active Routes:
+		http://localhost:9000 - Home Page
+		http://localhost:9000/webForm - UserForm (Enter a URL in Text-Field, Press Submit Button) 
+5. app/controllers/ParseWebPage.scala - This can also be run directly in IDE (like IntelliJ). It  would render results on terminal.
+
 
 
