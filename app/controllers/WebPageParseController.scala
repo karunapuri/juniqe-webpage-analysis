@@ -41,7 +41,7 @@ class WebPageParseController @Inject()(cc:ControllerComponents) extends Abstract
     )
   }
 
-  private def getCompleteWebPgInfo(url: String) = {
+  def getCompleteWebPgInfo(url: String) = {
     (getDocTitle(url) + "\n" + getHtmlVersion(url) + "\n" + getHtmlh1Heading(url) + "\n" + getHtmlh2Heading(url) +
       "\n"+ getHtmlh3Heading(url) + "\n"+ getHtmlh4Heading(url) + "\n"+getHtmlh5Heading(url) + "\n"+ getHtmlh6Heading(url)
       +"\n"+getAllHtmlExternalLinks(url) + "\n"+ getAllHtmlInternalLinks(url)+ "\n"+ getAllHtmlInaccessibleLinks(url)+"\n" + getHtmlLoginFormInfo(url))

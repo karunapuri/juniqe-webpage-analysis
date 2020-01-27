@@ -8,12 +8,12 @@ lazy val root = (project in file("."))
   .enablePlugins(PlayScala)
 
 libraryDependencies ++= Seq(ws,
-"org.jsoup" % "jsoup" % "1.6.1"
-)
+"org.jsoup" % "jsoup" % "1.6.1",
+  "org.scalatra.scalate" %% "play-scalate" % "0.4.0"
+)++testDependencies
 
 lazy val testDependencies = Seq(
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0" % Test,
-  //  "org.scalatest" %% "scalatest" % "3.0.8" % "test",
   specs2 % Test)
 
 libraryDependencies += guice
