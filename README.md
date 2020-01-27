@@ -15,10 +15,10 @@ And in case the URL given by the user is not reachable an error message would ap
 
 # Technologies Used:
 
-Backend 
+Backend:
 1. Scala V2.12.1
-2. sbt V0.13.13
-3. App built using Play Framework V2.6.12
+2. sbt V0.13.15
+3. App built using Play Framework V2.7.4
 
 Frontend:
 1. Scala Twirl Template (HTML)

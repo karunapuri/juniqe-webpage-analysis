@@ -1,0 +1,13 @@
+@(form: Form[WebPageAnalysisForm])(implicit messages: Messages)
+@if(form.hasGlobalErrors) {
+    <ul>
+    @for(error <- form.globalErrors) {
+        <li>@error.format</li>
+    }
+    </ul>
+}
+<dl class="error" id="url">
+    <dt><label for="url">URL:</label></dt>
+    <dd><input type="text" name="url" id="url" value=""></dd>
+    <dd class="error">This field is required!</dd>
+</dl>

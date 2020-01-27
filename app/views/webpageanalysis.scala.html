@@ -1,0 +1,9 @@
+@import helper._
+
+@(userForm: Form[WebPageAnalysisForm])(implicit messages: Messages)
+
+@form(action = routes.WebPageParseController.formPost()) {
+    @inputText(userForm("url"))
+
+    <input type="submit" value="Submit">
+}
